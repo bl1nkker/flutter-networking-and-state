@@ -42,7 +42,7 @@ class _MainScreenState extends State<MainScreen> {
     final prefs = await SharedPreferences.getInstance();
     // Check if a preference for your current index already exists.
     if (prefs.containsKey(prefSelectedIndexKey)) {
-      // Get the current index and update the state accordingly.
+      // Get the current index and update the state accordingly
       setState(() {
         final index = prefs.getInt(prefSelectedIndexKey);
         if (index != null) {
