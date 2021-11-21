@@ -6,6 +6,7 @@ import 'myrecipes/my_recipes_list.dart';
 import 'recipes/recipe_list.dart';
 import 'shopping/shopping_list.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class MainScreen extends StatefulWidget {
   const MainScreen({Key? key}) : super(key: key);
@@ -17,7 +18,14 @@ class MainScreen extends StatefulWidget {
 class _MainScreenState extends State<MainScreen> {
   int _selectedIndex = 0;
   List<Widget> pageList = <Widget>[];
-  // TODO: Add index key
+  static const String prefSelectedIndexKey = 'selectedIndex';
+  void saveCurrentIndex() async {
+    // Use the await keyword to wait for an instance of the shared preference
+    // plugin.
+    final prefs = await SharedPreferences.getInstance();
+    // Save the selected index as an integer.
+    prefs.setInt(prefSelectedIndexKey, _selectedIndex);
+  }
 
   @override
   void initState() {
@@ -25,14 +33,30 @@ class _MainScreenState extends State<MainScreen> {
     pageList.add(const RecipeList());
     pageList.add(const MyRecipesList());
     pageList.add(const ShoppingList());
-    // TODO: Call getCurrentIndex
+    getCurrentIndex();
+  }
+
+  void getCurrentIndex() async {
+    // Use the await keyword to wait for an instance of the shared preference
+    //plugin.
+    final prefs = await SharedPreferences.getInstance();
+    // Check if a preference for your current index already exists.
+    if (prefs.containsKey(prefSelectedIndexKey)) {
+      // Get the current index and update the state accordingly.
+      setState(() {
+        final index = prefs.getInt(prefSelectedIndexKey);
+        if (index != null) {
+          _selectedIndex = index;
+        }
+      });
+    }
   }
 
   void _onItemTapped(int index) {
     setState(() {
       _selectedIndex = index;
     });
-    // TODO: Call saveCurrentIndex
+    saveCurrentIndex();
   }
 
   @override
